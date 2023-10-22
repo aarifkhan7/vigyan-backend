@@ -47,6 +47,7 @@ app.get('/', (req, res)=>{
     get(ref(database, '/')).then((snapshot)=>{
         if(snapshot.exists()){
             console.log("Data fetched for /");
+            res.setHeader('content-type', 'application/geo+json');
             res.json(snapshot.val());
         }else{
             console.log("No data available");
