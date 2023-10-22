@@ -6,7 +6,7 @@ const port = 3000;
 
 // Firebase Imports
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue, get } from "firebase/database";
+import { getDatabase, ref, set, get, push } from "firebase/database";
 
 // Firebase Config
 const firebaseConfig = {
@@ -29,20 +29,21 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json());
 
 // Check for token
-app.use((req, res, next)=>{
-    const token = req.body.token;
-    if(token != "wewillwin"){
-        console.log("Unauthorized Access.");
-        res.sendStatus(401);
-        res.end();
-    }else{
-        next();
-    }
-});
+// app.use((req, res, next)=>{
+//     const token = req.body.token;
+//     if(token != "wewillwin"){
+//         console.log("Unauthorized Access.");
+//         res.sendStatus(401);
+//         res.end();
+//     }else{
+//         next();
+//     }
+// });
 
 // Endpoints
 
 app.get('/', (req, res)=>{
+    // Get Data from Firebase
     get(ref(database, '/')).then((snapshot)=>{
         if(snapshot.exists()){
             console.log("Data fetched for /");
@@ -54,6 +55,34 @@ app.get('/', (req, res)=>{
         console.log(error)
     );
 });
+
+app.post('/', (req, res)=>{
+    let lat = req.body.latitude;
+    let lon = req.body.longitude;
+    let dtype = req.body.type;
+    if(lat == undefined || lon == undefined || dtype == undefined){
+        res.sendStatus(400);
+        res.end();
+    }else{
+        // Write Data to Firebase
+        const featureListRef = ref(database, 'features/');
+        const newFeatureRef = push(featureListRef);
+        set(newFeatureRef, {
+            type: "Feature",
+            properties: {
+                type: dtype
+            },
+            geometry: {
+                coordinates: [
+                    lat,
+                    lon
+                ],
+                type: "Point"
+            }
+        });
+
+    }
+})
 
 // Start the Server
 app.listen(port, ()=>{
