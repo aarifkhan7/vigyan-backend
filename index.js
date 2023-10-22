@@ -81,7 +81,8 @@ app.post('/', (req, res)=>{
                 type: "Point"
             }
         });
-
+        res.sendStatus(200);
+        res.end();
     }
 })
 
