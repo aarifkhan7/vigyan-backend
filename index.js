@@ -59,7 +59,7 @@ app.get('/', (req, res)=>{
     );
 });
 
-app.post('/', (req, res)=>{
+app.post('/', async (req, res)=>{
     let lat = req.body.latitude;
     let lon = req.body.longitude;
     let dtype = req.body.type;
@@ -67,10 +67,12 @@ app.post('/', (req, res)=>{
         res.sendStatus(400);
         res.end();
     }else{
+        const currentFeatures = (await get(ref(database, '/features'))).val();
+        const newInd = currentFeatures.length;
+        console.log('Adding new Point at array index ' + newInd);
         // Write Data to Firebase
-        const featureListRef = ref(database, 'features/');
-        const newFeatureRef = push(featureListRef);
-        set(newFeatureRef, {
+        const featureListRef = ref(database, 'features/' + newInd);
+        set(featureListRef, {
             type: "Feature",
             properties: {
                 type: dtype
