@@ -5,6 +5,12 @@ import cors from "cors";
 const app = express();
 const port = 3000;
 
+const accountSid = 'AC38fca44caff76bc53d6952f46f8634b1';
+const authToken = 'd0bbb161c952bfbd485235d3aec9c885';
+import twilio from 'twilio';
+
+let smsClient = twilio(accountSid, authToken);
+
 // Firebase Imports
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, get, push } from "firebase/database";
@@ -87,6 +93,27 @@ app.post('/', async (req, res)=>{
         });
         res.sendStatus(200);
         res.end();
+    }
+});
+
+app.post('/accident', (req, res)=>{
+    let lat = req.body.latitude;
+    let lon = req.body.longitude;
+    if(lat == undefined || lon == undefined){
+        res.sendStatus(400);
+        res.end();
+    }else{
+        smsClient.messages
+            .create({
+                body: 'Accident detected at ' + lat + ", " + lon,
+                from: '+14093594897',
+                to: '+919993883808'
+            })
+            .then(message => {
+                console.log(lat + ", " + lon + ": " + message.sid);
+                res.sendStatus(200);
+                res.end();
+            });
     }
 })
 
