@@ -110,8 +110,11 @@ app.post('/accident', (req, res)=>{
                 to: '+919993883808'
             })
             .then(message => {
-                console.log(lat + ", " + lon + ": " + message.sid);
+                console.log("SMS Sent: " + lat + ", " + lon + ": " + message.sid);
                 res.sendStatus(200);
+                res.end();
+            }).catch(err => {
+                res.sendStatus(500);
                 res.end();
             });
     }
