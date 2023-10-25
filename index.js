@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import cors from "cors";
+import nocache from "nocache";
 const app = express();
 const port = 3000;
 
@@ -31,6 +32,7 @@ const firebaseConfig = {
 const fbapp = initializeApp(firebaseConfig);
 const database = getDatabase(fbapp);
 
+app.use(nocache());
 app.use(cors());
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }))
