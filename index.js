@@ -2,11 +2,15 @@ import express from "express";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const app = express();
 const port = 3000;
 
-const accountSid = 'AC38fca44caff76bc53d6952f46f8634b1';
-const authToken = 'ea9b3b9903676db810329d8ed3bb6255';
+const accountSid = process.env.twilioAccountSid;
+const authToken = process.env.twilioAuthToken;
 import twilio from 'twilio';
 
 let smsClient = twilio(accountSid, authToken);
@@ -17,7 +21,7 @@ import { getDatabase, ref, set, get, push } from "firebase/database";
 
 // Firebase Config
 const firebaseConfig = {
-    apiKey: "AIzaSyC5FbQl7TWhuQYGw4AWzHa-uYdVKHV2ts4",
+    apiKey: process.env.firebaseApiKey,
     authDomain: "vigyan-69094.firebaseapp.com",
     projectId: "vigyan-69094",
     storageBucket: "vigyan-69094.appspot.com",
