@@ -111,12 +111,12 @@ app.post('/accident', (req, res)=>{
     }else{
         smsClient.messages
             .create({
-                body: 'Accident detected at ' + lat + ", " + lon + '. View at http://maps.google.com/maps?z=12&t=m&q='+lat+','+lon,
+                body: 'Accident detected at ' + lon + ", " + lat + '. View at http://maps.google.com/maps?z=12&t=m&q='+lon+','+lat,
                 from: '+14093594897',
                 to: '+919993883808'
             })
             .then(message => {
-                console.log("SMS Sent: " + lat + ", " + lon + ": " + message.sid);
+                console.log("SMS Sent: " + lon + ", " + lat + ": " + message.sid);
                 res.sendStatus(200);
                 res.end();
             }).catch(err => {
