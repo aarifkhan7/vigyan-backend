@@ -1,4 +1,6 @@
 import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import cors from "cors";
@@ -8,6 +10,8 @@ dotenv.config();
 
 import nocache from "nocache";
 const app = express();
+const httpServer = createServer(app);
+const socketio = new Server(httpServer, { /* options */ });
 const port = 3000;
 
 const accountSid = process.env.twilioAccountSid;
@@ -124,16 +128,19 @@ app.post('/accident', (req, res)=>{
                 res.sendStatus(500);
                 res.end();
             });
+        socketio.emit("accident", {
+            latitude: lat,
+            longitude: lon
+        });
     }
 })
 
-// Start the Server
-app.listen(port, ()=>{
-    // write data
-    // set(ref(database, 'users/'), {
-    //     username: "aarifkhan",
-    //     password: "abcd1234"
-    // });
+// Socket.io events
+socketio.on("connection", (socket)=>{
+    console.log("Socket Connected: " + socket.id);
+})
 
+// Start the Server
+httpServer.listen(port, ()=>{
     console.log("OK");
 })
