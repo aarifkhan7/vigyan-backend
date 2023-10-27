@@ -11,7 +11,16 @@ dotenv.config();
 import nocache from "nocache";
 const app = express();
 const httpServer = createServer(app);
-const socketio = new Server(httpServer, { /* options */ });
+const socketio = new Server(httpServer, { 
+    cors:{
+        origin: [
+            "http://127.0.0.1:5500",
+	        "http://localhost:3001",
+            "https://vigyan-accidents.onrender.com"
+        ],
+        methods: ["GET", "POST"]
+    }
+});
 const port = 3000;
 
 const accountSid = process.env.twilioAccountSid;
@@ -132,6 +141,7 @@ app.post('/accident', (req, res)=>{
             latitude: lat,
             longitude: lon
         });
+        console.log("Accident event emitted!");
     }
 })
 
